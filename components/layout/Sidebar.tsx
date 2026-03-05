@@ -2,27 +2,39 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Box, Star, Code, Gamepad2, GraduationCap, Heart, Users, ChevronRight } from 'lucide-react';
+import { User, MousePointer2, Expand, Minimize, Menu, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import CustomCursor from '@/components/ui/CustomCursor';
 
 const navItems = [
-  { href: '/', icon: Home, label: 'Home' },
-  { href: '/#products', icon: Box, label: 'Products' },
-  { href: '/#features', icon: Star, label: 'Features' },
-  { href: '/#pricing', icon: Code, label: 'API Access' },
-  { href: '/cheats', icon: Gamepad2, label: 'Free Cheats' },
-  { href: '/#courses', icon: GraduationCap, label: 'Courses' },
-  { href: '/#about', icon: Heart, label: 'About Us' },
-  { href: '/#team', icon: Users, label: 'Team' },
+  { href: '/', label: 'Home' },
+  { href: '/#products', label: 'Products' },
+  { href: '/#features', label: 'Features' },
+  { href: '/#pricing', label: 'API Access' },
+  { href: '/#courses', label: 'Courses' },
+  { href: '/#about', label: 'About' },
+  { href: '/#team', label: 'Team' },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState('');
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isNormalCursor, setIsNormalCursor] = useState(true);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    // Enable custom cursor on first load
+    document.body.classList.add('custom-cursor-active');
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = document.querySelectorAll('section[id], .hero[id]');
+      setScrolled(window.scrollY > 20);
+      const sections = document.querySelectorAll('section[id]');
       let current = '';
       sections.forEach((section) => {
         const sectionTop = (section as HTMLElement).offsetTop;
@@ -30,89 +42,260 @@ export default function Sidebar() {
           current = section.getAttribute('id') || '';
         }
       });
+      // If scrolled back above the first section, reset to home
+      const firstSection = sections[0] as HTMLElement | undefined;
+      if (firstSection && window.scrollY < firstSection.offsetTop - 150) {
+        current = '';
+      }
       setActiveSection(current);
     };
-
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onFS = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener('fullscreenchange', onFS);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('fullscreenchange', onFS);
+    };
   }, []);
 
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+    else document.exitFullscreen();
+  };
+
+  const toggleCursor = () => {
+    const next = !isNormalCursor;
+    setIsNormalCursor(next);
+    // next=true → custom cursor ON (hide OS cursor)
+    // next=false → custom cursor OFF (show OS cursor)
+    document.body.classList.toggle('custom-cursor-active', next);
+  };
+
+  const isActiveLink = (href: string) => {
+    if (href === '/') {
+      // Home is only active when on the home page with no section scrolled into view
+      return pathname === '/' && activeSection === '';
+    }
+    if (href.startsWith('/#')) {
+      return pathname === '/' && activeSection === href.substring(2);
+    }
+    return pathname === href;
+  };
+
+  const navBtn: React.CSSProperties = {
+    border: '1.5px solid rgba(200,184,232,0.14)',
+    borderRadius: '3px',
+    background: 'rgba(255,253,245,0.03)',
+    color: 'rgba(240,237,228,0.50)',
+    boxShadow: '2px 2px 0 rgba(200,184,232,0.06)',
+    transition: 'all 0.2s ease',
+  };
+
+  const navBtnHover = (e: React.MouseEvent<HTMLElement>) => {
+    const el = e.currentTarget as HTMLElement;
+    el.style.borderColor = 'rgba(200,184,232,0.35)';
+    el.style.color = '#c8b8e8';
+    el.style.boxShadow = '2px 2px 0 rgba(200,184,232,0.15), 4px 4px 0 rgba(200,184,232,0.07)';
+    el.style.transform = 'translate(-1px,-1px)';
+  };
+
+  const navBtnLeave = (e: React.MouseEvent<HTMLElement>) => {
+    const el = e.currentTarget as HTMLElement;
+    el.style.borderColor = 'rgba(200,184,232,0.14)';
+    el.style.color = 'rgba(240,237,228,0.50)';
+    el.style.boxShadow = '2px 2px 0 rgba(200,184,232,0.06)';
+    el.style.transform = '';
+  };
+
   return (
-    <aside className="fixed top-0 left-0 w-[280px] h-screen bg-gradient-to-b from-[#08060f] to-[#05040c] border-r border-white/5 z-50 flex flex-col overflow-hidden hidden md:flex">
-      {/* Top Border Glow */}
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-purple-500/30 to-transparent" />
-      
-      {/* Right Border Glow */}
-      <div className="absolute top-0 right-0 w-[1px] h-full bg-gradient-to-b from-transparent via-purple-500/40 to-transparent shadow-[0_0_8px_rgba(168,85,247,0.2)]" />
+    <>
+      <CustomCursor active={mounted && isNormalCursor} />
+      <header
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+        suppressHydrationWarning
+        style={{
+          background: mounted && scrolled ? 'rgba(13,11,18,0.96)' : 'rgba(13,11,18,0.78)',
+          borderBottom: mounted && scrolled ? '1.5px solid rgba(200,184,232,0.14)' : '1.5px solid rgba(200,184,232,0.07)',
+          backdropFilter: 'blur(22px)',
+          WebkitBackdropFilter: 'blur(22px)',
+          boxShadow: mounted && scrolled ? '0 4px 32px rgba(0,0,0,0.45), 0 1px 0 rgba(200,184,232,0.05)' : 'none',
+        }}
+      >
+        {/* Chalk top accent line */}
+        <div className="absolute top-0 left-0 right-0 h-[1.5px] pointer-events-none"
+          style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(200,184,232,0.55) 25%, rgba(168,200,232,0.40) 55%, rgba(168,220,200,0.25) 80%, transparent 100%)' }} />
 
-      {/* Header */}
-      <div className="p-4 flex items-center gap-3 relative shrink-0 border-b border-white/5">
-        <div className="relative w-10 h-10 flex items-center justify-center shrink-0 bg-gradient-to-br from-purple-500/20 to-pink-500/10 border border-purple-500/30 rounded-xl overflow-hidden shadow-[0_4px_24px_rgba(143,0,255,0.15)] group hover:scale-105 transition-transform duration-300">
-          <img src="https://i.postimg.cc/sg838cbj/download-(7).gif" alt="Logo" className="w-full h-full object-cover" />
-        </div>
-        <div className="flex flex-col min-w-0">
-          <div className="flex flex-col leading-none">
-            <span className="font-space-grotesk text-[22px] font-bold tracking-[5px] bg-clip-text text-transparent bg-gradient-to-br from-white via-slate-200 to-purple-400 drop-shadow-[0_0_8px_rgba(143,0,255,0.15)]">SCRIPT</span>
-            <span className="font-space-grotesk text-[14px] font-semibold tracking-[7px] text-purple-400/60 mt-[1px]">KITTENS</span>
-          </div>
-          <span className="text-[10px] text-white/30 tracking-[0.5px] font-medium font-space-grotesk flex items-center gap-1.5 mt-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(143,0,255,0.6)] animate-pulse" />
-            Elite Gaming Tools Studio
-          </span>
-        </div>
-      </div>
+        <div className="max-w-[1380px] mx-auto px-5 md:px-8 h-[72px] flex items-center gap-5">
 
-      {/* Navigation */}
-      <nav className="flex-1 p-3 flex flex-col gap-1 overflow-y-auto overflow-x-hidden relative z-10">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href || (item.href.startsWith('/#') && activeSection === item.href.substring(2));
-          return (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={`relative flex items-center gap-3 px-3 py-2 rounded-lg font-outfit font-medium tracking-[0.3px] transition-all duration-200 min-h-[48px] group ${
-                isActive 
-                  ? 'text-white bg-gradient-to-r from-purple-500/10 to-transparent border-l-4 border-purple-500 font-bold' 
-                  : 'text-white/60 hover:text-white hover:bg-white/5 hover:translate-x-1'
-              }`}
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-3 shrink-0 group">
+            <div className="relative w-9 h-9 flex items-center justify-center overflow-hidden transition-all duration-300 group-hover:scale-105 group-hover:rotate-[-2deg]"
+              style={{
+                border: '1.5px solid rgba(200,184,232,0.28)',
+                borderRadius: '4px',
+                background: 'rgba(200,184,232,0.06)',
+                boxShadow: '2px 2px 0 rgba(200,184,232,0.12), 4px 4px 0 rgba(200,184,232,0.05)',
+              }}>
+              <img src="https://i.postimg.cc/sg838cbj/download-(7).gif" alt="Logo" className="w-full h-full object-cover" />
+            </div>
+            <div className="flex flex-col leading-none">
+              <span className="font-space-grotesk text-[17px] font-bold tracking-[4px]"
+                style={{ color: '#f0ede4', textShadow: '0 0 16px rgba(200,184,232,0.18)' }}>SCRIPT</span>
+              <span className="font-space-grotesk text-[9px] font-semibold tracking-[5px] mt-[1px]"
+                style={{ color: 'rgba(200,184,232,0.48)' }}>KITTENS</span>
+            </div>
+          </Link>
+
+          {/* Pencil divider */}
+          <div className="hidden md:block w-[1.5px] h-7 shrink-0 rounded-full"
+            style={{ background: 'linear-gradient(180deg, transparent, rgba(200,184,232,0.18), transparent)' }} />
+
+          {/* Nav links */}
+          <nav className="hidden md:flex items-center gap-0.5 flex-1">
+            {navItems.map((item) => {
+              const active = isActiveLink(item.href);
+              return (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className="relative px-3.5 py-2 font-outfit font-medium text-[13px] tracking-[0.3px] transition-all duration-200 rounded-[3px]"
+                  style={{
+                    color: active ? '#f0ede4' : 'rgba(240,237,228,0.45)',
+                    border: active ? '1.5px solid rgba(200,184,232,0.22)' : '1.5px solid transparent',
+                    background: active ? 'rgba(200,184,232,0.07)' : 'transparent',
+                    boxShadow: active ? '2px 2px 0 rgba(200,184,232,0.08)' : 'none',
+                  }}
+                  onMouseEnter={e => {
+                    if (!active) {
+                      const el = e.currentTarget as HTMLElement;
+                      el.style.color = 'rgba(240,237,228,0.85)';
+                      el.style.borderColor = 'rgba(200,184,232,0.15)';
+                      el.style.background = 'rgba(200,184,232,0.04)';
+                    }
+                  }}
+                  onMouseLeave={e => {
+                    if (!active) {
+                      const el = e.currentTarget as HTMLElement;
+                      el.style.color = 'rgba(240,237,228,0.45)';
+                      el.style.borderColor = 'transparent';
+                      el.style.background = 'transparent';
+                    }
+                  }}
+                >
+                  {active && (
+                    <span className="absolute bottom-[-1.5px] left-[15%] right-[15%] h-[1.5px] rounded-full"
+                      style={{ background: 'linear-gradient(90deg, transparent, rgba(200,184,232,0.80), transparent)' }} />
+                  )}
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Right controls */}
+          <div className="flex items-center gap-2 ml-auto shrink-0">
+            {/* Status */}
+            <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 font-jetbrains-mono text-[10px] font-medium rounded-[3px]"
+              style={{ color: 'rgba(168,220,200,0.65)', border: '1px solid rgba(168,220,200,0.15)', background: 'rgba(168,220,200,0.04)' }}>
+              <span className="w-1.5 h-1.5 rounded-full animate-pulse"
+                style={{ background: '#a8dccc', boxShadow: '0 0 5px rgba(168,220,200,0.6)' }} />
+              Online
+            </div>
+
+            {/* Cursor */}
+            <button
+              onClick={toggleCursor}
+              title={mounted && isNormalCursor ? 'Disable custom cursor' : 'Enable custom cursor'}
+              className="w-9 h-9 flex items-center justify-center rounded-[3px] transition-all duration-200"
+              style={{
+                ...navBtn,
+                background: mounted && isNormalCursor ? 'rgba(200,184,232,0.12)' : navBtn.background,
+                color: mounted && isNormalCursor ? '#c8b8e8' : navBtn.color,
+                borderColor: mounted && isNormalCursor ? 'rgba(200,184,232,0.35)' : navBtn.borderColor,
+                boxShadow: mounted && isNormalCursor
+                  ? '2px 2px 0 rgba(200,184,232,0.15), 4px 4px 0 rgba(200,184,232,0.07), 0 0 8px rgba(200,184,232,0.12)'
+                  : navBtn.boxShadow,
+              }}
+              onMouseEnter={navBtnHover}
+              onMouseLeave={navBtnLeave}
             >
-              <div className={`w-8 h-8 flex items-center justify-center rounded-lg border transition-all duration-300 ${
-                isActive
-                  ? 'bg-gradient-to-br from-purple-500/25 to-pink-500/12 border-purple-500/40 text-purple-300 shadow-[0_0_24px_rgba(143,0,255,0.25),inset_0_0_10px_rgba(143,0,255,0.1)]'
-                  : 'bg-white/5 border-white/5 text-white/40 group-hover:bg-purple-500/15 group-hover:border-purple-500/25 group-hover:text-purple-400 group-hover:shadow-[0_0_14px_rgba(143,0,255,0.12)]'
-              }`}>
-                <item.icon className="w-4 h-4" />
-              </div>
-              <span className="flex-1 relative z-10">{item.label}</span>
-              <ChevronRight className={`w-3 h-3 transition-all duration-300 ${
-                isActive ? 'opacity-100 text-purple-400 translate-x-0' : 'opacity-0 -translate-x-2 group-hover:opacity-70 group-hover:translate-x-0'
-              }`} />
+              <MousePointer2 className="w-3.5 h-3.5" />
+            </button>
+
+            {/* Fullscreen */}
+            <button onClick={toggleFullscreen} title="Toggle fullscreen"
+              className="w-9 h-9 flex items-center justify-center rounded-[3px] transition-all duration-200"
+              style={navBtn}
+              onMouseEnter={navBtnHover} onMouseLeave={navBtnLeave}>
+              {mounted && isFullscreen ? <Minimize className="w-3.5 h-3.5" /> : <Expand className="w-3.5 h-3.5" />}
+            </button>
+
+            {/* Profile */}
+            <Link href="/profile"
+              className="hidden sm:flex items-center gap-2 px-4 py-2 font-jetbrains-mono text-[12px] font-semibold rounded-[3px] transition-all duration-200"
+              style={{ border: '1.5px solid rgba(200,184,232,0.22)', background: 'rgba(200,184,232,0.07)', color: '#c8b8e8', boxShadow: '2px 2px 0 rgba(200,184,232,0.12), 4px 4px 0 rgba(200,184,232,0.06)' }}
+              onMouseEnter={e => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.background = 'rgba(200,184,232,0.14)';
+                el.style.boxShadow = '3px 3px 0 rgba(200,184,232,0.20), 5px 5px 0 rgba(200,184,232,0.10)';
+                el.style.transform = 'translate(-1px,-1px)';
+              }}
+              onMouseLeave={e => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.background = 'rgba(200,184,232,0.07)';
+                el.style.boxShadow = '2px 2px 0 rgba(200,184,232,0.12), 4px 4px 0 rgba(200,184,232,0.06)';
+                el.style.transform = '';
+              }}>
+              <User className="w-3.5 h-3.5" />
+              Profile
             </Link>
-          );
-        })}
-      </nav>
 
-      {/* Socials */}
-      <div className="p-6 flex justify-center gap-4 border-t border-white/5">
-        <a href="https://discord.gg/AqkdsPMU7M" target="_blank" rel="noreferrer" className="w-12 h-12 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-white/40 text-xl transition-all duration-300 hover:border-purple-500/30 hover:-translate-y-1 hover:shadow-[0_6px_20px_rgba(168,85,247,0.15)] hover:text-[#5865f2] hover:bg-[#5865f2]/10">
-          <img src="https://img.icons8.com/liquid-glass/96/discord-logo.png" alt="Discord" className="w-full h-full object-contain rounded-xl" />
-        </a>
-        <a href="https://www.youtube.com/channel/UCIlubysLx-75CVZ1dcIfWvA" target="_blank" rel="noreferrer" className="w-12 h-12 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-white/40 text-xl transition-all duration-300 hover:border-purple-500/30 hover:-translate-y-1 hover:shadow-[0_6px_20px_rgba(168,85,247,0.15)] hover:text-[#ff0000] hover:bg-[#ff0000]/10">
-          <img src="https://img.icons8.com/liquid-glass/96/youtube-play.png" alt="YouTube" className="w-full h-full object-contain rounded-xl" />
-        </a>
-        <a href="https://www.instagram.com/fuqii69/" target="_blank" rel="noreferrer" className="w-12 h-12 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-white/40 text-xl transition-all duration-300 hover:border-purple-500/30 hover:-translate-y-1 hover:shadow-[0_6px_20px_rgba(168,85,247,0.15)] hover:text-[#e1306c] hover:bg-[#e1306c]/10">
-          <img src="https://img.icons8.com/liquid-glass/96/instagram-new.png" alt="Instagram" className="w-full h-full object-contain rounded-xl" />
-        </a>
-      </div>
-
-      {/* Footer */}
-      <div className="px-6 pb-4 border-t border-white/5 pt-3">
-        <div className="flex items-center gap-2 px-3 py-2 bg-emerald-500/5 border border-emerald-500/10 rounded-lg text-[11px] font-medium text-white/50 tracking-[0.3px]">
-          <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse" />
-          All Systems Online
+            {/* Mobile hamburger */}
+            <button onClick={() => setMobileOpen(p => !p)}
+              className="md:hidden w-9 h-9 flex items-center justify-center rounded-[3px] transition-all duration-200"
+              style={{ border: '1.5px solid rgba(200,184,232,0.18)', background: 'rgba(200,184,232,0.05)', color: 'rgba(240,237,228,0.65)' }}>
+              {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            </button>
+          </div>
         </div>
-        <p className="text-center text-[10px] text-white/20 tracking-[0.5px] mt-2">© 2026 Script Kittens</p>
-      </div>
-    </aside>
+
+        {/* Mobile dropdown menu */}
+        {mobileOpen && (
+          <div className="md:hidden animate-chalk-fadein"
+            style={{ background: 'rgba(13,11,18,0.98)', borderTop: '1px solid rgba(200,184,232,0.10)', borderBottom: '1.5px solid rgba(200,184,232,0.14)' }}>
+            <div className="px-5 py-4 flex flex-col gap-1">
+              {navItems.map((item) => {
+                const active = isActiveLink(item.href);
+                return (
+                  <Link key={item.label} href={item.href} onClick={() => setMobileOpen(false)}
+                    className="px-3 py-2.5 font-outfit font-medium text-[14px] tracking-[0.3px] transition-all duration-200 rounded-[3px]"
+                    style={{
+                      border: active ? '1.5px solid rgba(200,184,232,0.22)' : '1.5px solid transparent',
+                      background: active ? 'rgba(200,184,232,0.07)' : 'transparent',
+                      color: active ? '#f0ede4' : 'rgba(240,237,228,0.55)',
+                      boxShadow: active ? '2px 2px 0 rgba(200,184,232,0.08)' : 'none',
+                    }}>
+                    {item.label}
+                  </Link>
+                );
+              })}
+              <div className="flex items-center justify-between pt-3 mt-2"
+                style={{ borderTop: '1px dashed rgba(200,184,232,0.12)' }}>
+                <Link href="/profile" onClick={() => setMobileOpen(false)}
+                  className="flex items-center gap-2 px-4 py-2 font-jetbrains-mono text-[12px] font-semibold rounded-[3px]"
+                  style={{ border: '1.5px solid rgba(200,184,232,0.22)', background: 'rgba(200,184,232,0.07)', color: '#c8b8e8', boxShadow: '2px 2px 0 rgba(200,184,232,0.10)' }}>
+                  <User className="w-3.5 h-3.5" /> Profile
+                </Link>
+                <div className="flex items-center gap-1.5 font-jetbrains-mono text-[10px]"
+                  style={{ color: 'rgba(168,220,200,0.65)' }}>
+                  <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: '#a8dccc' }} />
+                  Online
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </header>
+    </>
   );
 }

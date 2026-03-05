@@ -4,9 +4,12 @@ import { useEffect, useState } from 'react';
 import gsap from 'gsap';
 
 export default function Preloader() {
+  const [hasMounted, setHasMounted] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
+    setHasMounted(true);
+
     const timer = setTimeout(() => {
       gsap.to('#preloader', {
         opacity: 0,
@@ -18,7 +21,7 @@ export default function Preloader() {
     return () => clearTimeout(timer);
   }, []);
 
-  if (!isVisible) return null;
+  if (!hasMounted || !isVisible) return null;
 
   return (
     <div id="preloader" className="fixed inset-0 bg-[#030305] z-[10000] flex items-center justify-center flex-col">

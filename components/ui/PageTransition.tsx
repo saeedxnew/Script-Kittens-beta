@@ -6,33 +6,56 @@ import gsap from 'gsap';
 
 export default function PageTransition() {
   const pathname = usePathname();
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Simple transition effect on route change
-    setIsTransitioning(true);
-    
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
     const tl = gsap.timeline();
-    tl.to('#page-transition', {
+    tl.set('#page-transition', { opacity: 0 })
+    .to('#page-transition', {
       opacity: 1,
-      duration: 0.3,
+      duration: 0.15,
       ease: 'power2.inOut'
     }).to('#page-transition', {
       opacity: 0,
-      duration: 0.4,
-      delay: 0.2,
-      ease: 'power2.inOut',
-      onComplete: () => setIsTransitioning(false)
+      duration: 0.2,
+      delay: 0.05,
+      ease: 'power2.inOut'
     });
+  }, [pathname, mounted]);
 
-  }, [pathname]);
+  if (!mounted) return null;
 
   return (
-    <div 
-      id="page-transition" 
-      className={`fixed inset-0 bg-[#050505] z-[99999] flex items-center justify-center pointer-events-none ${isTransitioning ? 'opacity-100' : 'opacity-0'}`}
+    <div
+      id="page-transition"
+      className="fixed inset-0 z-[99999] flex items-center justify-center pointer-events-none opacity-0"
+      style={{ background: '#050505' }}
     >
-      <div className="w-[60px] h-[60px] border-[3px] border-purple-500/20 border-t-purple-500 rounded-full animate-spin shadow-[0_0_40px_rgba(143,0,255,0.3)]" />
+      {/* Dual-ring spinner */}
+      <div className="relative w-14 h-14">
+        <div
+          className="absolute inset-0 rounded-full border-[2px] animate-spin"
+          style={{
+            borderColor: 'rgba(255,69,0,0.15)',
+            borderTopColor: '#FF4500',
+            boxShadow: '0 0 20px rgba(255,69,0,0.3)'
+          }}
+        />
+        <div
+          className="absolute inset-2 rounded-full border-[2px] animate-spin"
+          style={{
+            animationDirection: 'reverse',
+            animationDuration: '0.7s',
+            borderColor: 'rgba(255,69,0,0.08)',
+            borderBottomColor: 'rgba(255,69,0,0.5)'
+          }}
+        />
+      </div>
     </div>
   );
 }

@@ -18,11 +18,11 @@ export default function CheatsPage() {
 
   return (
     <>
-      <div className="min-h-screen pt-32 px-8 pb-20 max-w-[1200px] mx-auto relative z-10">
+      <div className="min-h-screen pt-32 px-5 md:px-8 pb-20 max-w-[1260px] mx-auto relative z-10">
         
         {/* Header */}
         <div className="text-center mb-14 reveal">
-          <h1 className="font-outfit text-6xl md:text-7xl font-extrabold tracking-tight mb-5 relative inline-block">
+          <h1 className="font-outfit text-5xl md:text-7xl font-extrabold tracking-tight mb-5 relative inline-block">
             Free Cheats <span className="text-gradient">Vault</span>
             <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-[100px] h-[3px] bg-gradient-to-r from-transparent via-white to-transparent rounded-sm" />
           </h1>
@@ -46,7 +46,7 @@ export default function CheatsPage() {
         </div>
 
         {/* Stats Bar */}
-        <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-10 mb-12 py-4 px-8 bg-[#0c0c11] border border-white/5 rounded-[50px] max-w-[600px] mx-auto reveal">
+        <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-10 mb-12 py-4 px-8 surface-card-soft rounded-[50px] max-w-[600px] mx-auto reveal">
           {[
             { icon: Code, num: '6', text: 'Scripts' },
             { icon: Download, num: '1,993', text: 'Downloads' },
@@ -62,7 +62,7 @@ export default function CheatsPage() {
 
         {/* Controls */}
         <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 mb-8 reveal">
-          <div className="flex items-center gap-2.5 bg-[#0c0c11] border border-white/5 rounded-xl px-4 py-2.5 w-full md:w-[300px] transition-all focus-within:border-white/15 focus-within:ring-2 focus-within:ring-white/5">
+          <div className="flex items-center gap-2.5 surface-card-soft rounded-xl px-4 py-2.5 w-full md:w-[300px] transition-all focus-within:border-white/20 focus-within:ring-2 focus-within:ring-white/5">
             <Search className="w-4 h-4 text-white/40" />
             <input 
               type="text" 
@@ -72,7 +72,7 @@ export default function CheatsPage() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <div className="flex bg-[#0c0c11] border border-white/5 rounded-xl p-1 overflow-x-auto">
+          <div className="flex surface-card-soft rounded-xl p-1 overflow-x-auto">
             {['all', 'code', 'tool', 'project'].map((tab) => (
               <button
                 key={tab}
@@ -92,7 +92,7 @@ export default function CheatsPage() {
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20 reveal">
           {/* Example Card 1 */}
-          <div className="bg-[#0c0c11] border border-white/5 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1.5 hover:bg-[#111118] hover:border-white/20 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4),0_0_60px_rgba(255,255,255,0.03)] group relative overflow-hidden">
+          <div className="surface-card-soft rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1.5 hover:bg-[#111118] hover:border-white/20 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4),0_0_60px_rgba(255,255,255,0.03)] group relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
             <div className="flex justify-between items-center mb-3.5 relative z-10">
               <div className="text-[11px] font-semibold text-white/70 bg-white/5 px-2.5 py-1 rounded flex items-center gap-1.5 border border-white/5">
@@ -131,7 +131,7 @@ export default function CheatsPage() {
           </div>
           
           {/* Example Card 2 */}
-          <div className="bg-[#0c0c11] border border-white/5 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1.5 hover:bg-[#111118] hover:border-white/20 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4),0_0_60px_rgba(255,255,255,0.03)] group relative overflow-hidden">
+          <div className="surface-card-soft rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1.5 hover:bg-[#111118] hover:border-white/20 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4),0_0_60px_rgba(255,255,255,0.03)] group relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
             <div className="flex justify-between items-center mb-3.5 relative z-10">
               <div className="text-[11px] font-semibold text-white/70 bg-white/5 px-2.5 py-1 rounded flex items-center gap-1.5 border border-white/5">
@@ -171,7 +171,7 @@ export default function CheatsPage() {
         </div>
 
         {/* Publish Section */}
-        <section id="upload-section" className="bg-gradient-to-br from-[#0c0c12]/95 to-[#08080e]/98 border border-white/5 rounded-3xl p-12 mb-20 relative overflow-hidden reveal">
+        <section id="upload-section" className="surface-card rounded-3xl p-8 md:p-12 mb-20 relative overflow-hidden reveal">
           <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-purple-500/30 to-transparent" />
           
           <div className="text-center mb-8">

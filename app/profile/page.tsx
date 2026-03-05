@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Camera, CheckCircle, Quote, Pen, Calendar, MapPin, User, Flame, Trophy, Users, TrendingUp, Gamepad2, Download, Shield, Settings, Lock, Bell, ChevronRight } from 'lucide-react';
+import { Camera, CheckCircle, Quote, Pen, Calendar, MapPin, User, Flame, Trophy, Users, TrendingUp, Gamepad2, Download, Shield, Settings, Lock, Bell, Crown, Zap, MessageCircle } from 'lucide-react';
 import Footer from '@/components/layout/Footer';
 import gsap from 'gsap';
 
@@ -17,10 +17,10 @@ export default function ProfilePage() {
 
   return (
     <>
-      <div className="min-h-screen pt-24 px-6 pb-6 max-w-[1100px] mx-auto relative z-10">
+      <div className="min-h-screen pt-24 px-5 md:px-6 pb-6 max-w-[1140px] mx-auto relative z-10">
         
         {/* Header */}
-        <div className="bg-[linear-gradient(145deg,rgba(22,18,48,0.92)_0%,rgba(12,10,28,0.88)_100%)] border border-purple-500/15 rounded-[22px] shadow-[0_12px_50px_rgba(0,0,0,0.5),0_0_100px_rgba(143,0,255,0.04),inset_0_1px_0_rgba(255,255,255,0.08)] mb-4 backdrop-blur-[60px] relative overflow-hidden transition-all duration-600 hover:border-purple-500/25 hover:-translate-y-[3px] reveal">
+        <div className="surface-card border-purple-500/15 rounded-[22px] mb-4 relative overflow-hidden transition-all duration-600 hover:border-purple-500/25 hover:-translate-y-[3px] reveal">
           
           {/* Banner */}
           <div className="relative h-[140px] overflow-hidden rounded-t-[22px] z-10">
@@ -60,7 +60,7 @@ export default function ProfilePage() {
                 </div>
                 <div className="flex items-center justify-center md:justify-start gap-2 flex-wrap">
                   <div className="inline-flex items-center gap-1.5 font-inter text-[12px] font-semibold text-white/70 px-3 py-1 rounded-full bg-white/5 border border-white/10 tracking-[0.2px]">
-                    <i className="fab fa-discord text-[10px] text-[#5865F2]" /> Discord
+                    <MessageCircle className="w-3 h-3 text-[#5865F2]" /> Discord
                   </div>
                   <button className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-white/5 border border-white/10 rounded-full text-white font-inter text-[13px] font-semibold transition-colors hover:bg-white/10 hover:border-white/15">
                     <span className="w-2 h-2 rounded-full bg-emerald-500" /> Available
@@ -178,7 +178,7 @@ export default function ProfilePage() {
         <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-2.5 mb-2.5 reveal">
           
           {/* Sidebar */}
-          <aside className="bg-[linear-gradient(145deg,rgba(22,18,48,0.85)_0%,rgba(12,10,28,0.75)_100%)] border border-white/5 rounded-[16px] p-5 h-fit sticky top-[84px] backdrop-blur-[40px] transition-all hover:border-purple-500/20">
+          <aside className="surface-card-soft rounded-[16px] p-5 h-fit sticky top-[84px] transition-all hover:border-purple-500/20">
             <div className="flex items-center gap-2 mb-4 pb-3 border-b border-purple-500/10 font-outfit text-[14px] font-bold">
               <Settings className="w-4 h-4 text-cyan-400" /> Settings
             </div>
@@ -207,7 +207,7 @@ export default function ProfilePage() {
           </aside>
 
           {/* Content Area */}
-          <div className="bg-[linear-gradient(145deg,rgba(22,18,48,0.85)_0%,rgba(12,10,28,0.75)_100%)] border border-white/5 rounded-[16px] p-7 backdrop-blur-[40px] transition-all hover:border-purple-500/20">
+          <div className="surface-card-soft rounded-[16px] p-7 transition-all hover:border-purple-500/20">
             
             {activeTab === 'general' && (
               <div className="animate-[tabIn_0.35s_ease]">

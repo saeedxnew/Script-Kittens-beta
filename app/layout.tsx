@@ -2,10 +2,10 @@ import type {Metadata} from 'next';
 import { Outfit, Inter, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import Sidebar from '@/components/layout/Sidebar';
-import TopControls from '@/components/layout/TopControls';
 import BackgroundEffects from '@/components/layout/BackgroundEffects';
-import Preloader from '@/components/ui/Preloader';
 import PageTransition from '@/components/ui/PageTransition';
+import Preloader from '@/components/ui/Preloader';
+import ClientOnly from '@/components/ui/ClientOnly';
 
 const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' });
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -19,16 +19,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
-    <html lang="en" className={`${outfit.variable} ${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} dark scroll-smooth`}>
-      <body className="bg-[#050508] text-white font-inter antialiased selection:bg-purple-600 selection:text-white md:pl-[280px]" suppressHydrationWarning>
-        <Preloader />
-        <PageTransition />
-        <BackgroundEffects />
-        <Sidebar />
-        <TopControls />
-        <main className="relative z-10 min-h-screen">
-          {children}
-        </main>
+    <html lang="en" className={`${outfit.variable} ${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} dark scroll-smooth`} suppressHydrationWarning>
+      <body className="bg-[#13111a] text-[#f0ede4] font-inter antialiased selection:bg-[#c8b8e8]/30 selection:text-[#f0ede4]" suppressHydrationWarning>
+        <ClientOnly>
+          <Preloader />
+          <PageTransition />
+          <BackgroundEffects />
+          <Sidebar />
+          <main className="relative z-10 min-h-screen pt-[72px]">
+            {children}
+          </main>
+        </ClientOnly>
       </body>
     </html>
   );

@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ShieldAlert, Lock, ShieldCheck, Minus, Plus, X } from 'lucide-react';
 import Footer from '@/components/layout/Footer';
 import gsap from 'gsap';
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const searchParams = useSearchParams();
   const plan = searchParams.get('plan');
   const [quantity, setQuantity] = useState(1);
@@ -20,10 +21,10 @@ export default function CheckoutPage() {
 
   return (
     <>
-      <div className="min-h-screen pt-32 px-6 md:px-10 pb-20 max-w-[1200px] mx-auto relative z-10">
+      <div className="min-h-screen pt-32 px-5 md:px-10 pb-20 max-w-[1260px] mx-auto relative z-10">
         
         {/* Alert */}
-        <div className="bg-[#121212] border-l-4 border-l-red-500 border-y border-r border-white/10 rounded-xl p-6 flex flex-col sm:flex-row gap-5 items-start sm:items-center mb-10 reveal">
+        <div className="surface-card-soft border-l-4 border-l-red-500 rounded-xl p-6 flex flex-col sm:flex-row gap-5 items-start sm:items-center mb-10 reveal">
           <ShieldAlert className="w-6 h-6 text-red-500 shrink-0" />
           <div className="flex-1">
             <h3 className="text-base font-bold text-white mb-1">Payment Disabled</h3>
@@ -104,13 +105,13 @@ export default function CheckoutPage() {
               )}
             </div>
 
-            <button className="w-full h-12 bg-white text-black font-bold text-sm rounded-xl mt-8 transition-colors hover:bg-[#e0e0e0]">
+            <button className="btn-primary w-full mt-8">
               Continue to Details
             </button>
           </div>
 
           {/* Right Column */}
-          <div className="bg-[#0A0A0A] border border-white/10 rounded-xl p-8 sticky top-[100px]">
+          <div className="surface-card-soft p-8 sticky top-[100px]">
             <div className="mb-6 pb-4 border-b border-white/10">
               <h3 className="font-outfit text-base font-bold text-white">Order Summary</h3>
             </div>
@@ -150,5 +151,13 @@ export default function CheckoutPage() {
       </div>
       <Footer />
     </>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen" />}>
+      <CheckoutContent />
+    </Suspense>
   );
 }
