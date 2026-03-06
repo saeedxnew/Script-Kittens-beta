@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Footer() {
   return (
@@ -135,7 +136,7 @@ export default function Footer() {
                       el.style.boxShadow = '0 0 12px rgba(124,58,237,0.06)';
                       el.style.transform = '';
                     }}>
-                    <img src={s.src} alt={s.alt} className="w-6 h-6 object-contain" />
+                    <Image src={s.src} alt={s.alt} width={24} height={24} className="object-contain" unoptimized />
                   </a>
                 ))}
               </div>
