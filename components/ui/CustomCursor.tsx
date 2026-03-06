@@ -67,7 +67,7 @@ export default function CustomCursor({ active }: Props) {
 
       // Hover detection — only update style if state changed
       const el = document.elementFromPoint(e.clientX, e.clientY);
-      const nowHovering = !!(el?.closest('a,button,[role="button"],input,textarea,select,label'));
+      const nowHovering = !!(el?.closest('a,button,[role="button"],input,textarea,select,label,[tabindex]:not([tabindex="-1"])'));
       if (nowHovering !== isHovering) {
         isHovering = nowHovering;
         applyRingStyle();

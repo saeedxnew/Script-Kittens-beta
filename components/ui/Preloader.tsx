@@ -42,7 +42,7 @@ export default function Preloader() {
       launchButtonRef.current?.focus();
     }
     // Make page content inaccessible while preloader is shown
-    const appRoot = document.getElementById('__next') ?? document.querySelector('main');
+    const appRoot = document.getElementById('app-main') ?? document.querySelector('main');
     if (appRoot) {
       if (phase !== 'done') {
         (appRoot as HTMLElement).setAttribute('inert', '');
@@ -55,7 +55,7 @@ export default function Preloader() {
     // Always clean up on unmount so a non-happy-path unmount never leaves
     // the app root permanently inert.
     return () => {
-      const root = document.getElementById('__next') ?? document.querySelector('main');
+      const root = document.getElementById('app-main') ?? document.querySelector('main');
       if (root) {
         (root as HTMLElement).removeAttribute('inert');
         (root as HTMLElement).removeAttribute('aria-hidden');
@@ -72,8 +72,9 @@ export default function Preloader() {
     // After exit animation completes, restore background and unmount.
     launchTimeoutRef.current = setTimeout(() => {
       launchTimeoutRef.current = null;
+      setPhase('done');
       setRemoved(true);
-      const appRoot = document.getElementById('__next') ?? document.querySelector('main');
+      const appRoot = document.getElementById('app-main') ?? document.querySelector('main');
       if (appRoot) {
         (appRoot as HTMLElement).removeAttribute('inert');
         (appRoot as HTMLElement).removeAttribute('aria-hidden');
@@ -94,9 +95,6 @@ export default function Preloader() {
         rafRef.current = null;
       }
       startRef.current = null;
-      // launchButtonRef is a React-managed ref; setting to null here is a
-      // no-op safety measure against stale focus calls.
-      (launchButtonRef as React.MutableRefObject<HTMLButtonElement | null>).current = null;
     };
   }, []);
 
